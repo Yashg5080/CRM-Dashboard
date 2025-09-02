@@ -1,0 +1,50 @@
+/* AG Grid Custom Styling */
+.ag-grid-custom {
+  --ag-header-background-color: hsl(var(--card));
+  --ag-header-foreground-color: hsl(var(--foreground));
+  --ag-row-background-color: hsl(var(--card));
+  --ag-odd-row-background-color: hsl(var(--muted) / 0.3);
+  --ag-row-hover-color: hsl(var(--muted) / 0.5);
+  --ag-row-border-color: hsl(var(--border));
+  --ag-border-color: hsl(var(--border));
+  --ag-font-family: inherit;
+  --ag-font-size: 14px;
+  --ag-header-font-weight: 600;
+  --ag-cell-horizontal-padding: 16px;
+}
+
+.ag-grid-custom .ag-header {
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.ag-grid-custom .ag-header-cell {
+  border-right: 1px solid hsl(var(--border));
+}
+
+.ag-grid-custom .ag-cell {
+  border-right: 1px solid hsl(var(--border));
+  display: flex;
+  align-items: center;
+}
+
+.ag-grid-custom .ag-row {
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.ag-grid-custom .ag-row:hover {
+  background-color: hsl(var(--muted) / 0.3);
+}
+
+.ag-grid-custom .ag-header-cell-text {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.ag-grid-custom .ag-icon {
+  color: hsl(var(--muted-foreground));
+}
+
+.ag-grid-custom .ag-sort-ascending-icon,
+.ag-grid-custom .ag-sort-descending-icon {
+  color: hsl(var(--primary));
+}
