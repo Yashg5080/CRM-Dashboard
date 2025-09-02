@@ -1,12 +1,19 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Sidebar } from "@/components/layout/Sidebar";
+import { CustomerHeader } from "@/components/dashboard/CustomerHeader";
+import { StatsCards } from "@/components/dashboard/StatsCards";
+import { CustomerTable } from "@/components/dashboard/CustomerTable";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="flex h-screen bg-background">
+      <Sidebar />
+      <main className="flex-1 overflow-auto">
+        <div className="p-6">
+          <CustomerHeader />
+          <StatsCards />
+          <CustomerTable />
+        </div>
+      </main>
     </div>
   );
 };
