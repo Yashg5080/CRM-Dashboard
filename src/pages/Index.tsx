@@ -1,17 +1,17 @@
-import { Sidebar } from "@/components/layout/Sidebar";
-import { CustomerHeader } from "@/components/dashboard/CustomerHeader";
-import { StatsCards } from "@/components/dashboard/StatsCards";
-import { CustomerTable } from "@/components/dashboard/CustomerTable";
+import { AppSidebar } from "@/components/layout/AppSidebar";
+import { TopBar } from "@/components/layout/TopBar";
+import { StatsStrip } from "@/components/dashboard/StatsStrip";
+import { CustomersTableCard } from "@/components/dashboard/CustomersTableCard";
 
 const Index = () => {
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar />
+      <AppSidebar />
       <main className="flex-1 overflow-auto">
-        <div className="p-6">
-          <CustomerHeader />
-          <StatsCards />
-          <CustomerTable />
+        <TopBar />
+        <StatsStrip />
+        <div className="px-6 pb-6">
+          <CustomersTableCard />
         </div>
       </main>
     </div>

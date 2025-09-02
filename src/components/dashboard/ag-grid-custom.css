@@ -3,7 +3,7 @@
   --ag-header-background-color: hsl(var(--card));
   --ag-header-foreground-color: hsl(var(--foreground));
   --ag-row-background-color: hsl(var(--card));
-  --ag-odd-row-background-color: hsl(var(--muted) / 0.3);
+  --ag-odd-row-background-color: hsl(var(--card));
   --ag-row-hover-color: hsl(var(--muted) / 0.5);
   --ag-row-border-color: hsl(var(--border));
   --ag-border-color: hsl(var(--border));
@@ -11,20 +11,34 @@
   --ag-font-size: 14px;
   --ag-header-font-weight: 600;
   --ag-cell-horizontal-padding: 16px;
+  --ag-grid-size: 4px;
+  --ag-wrapper-border-radius: 8px;
+}
+
+.ag-grid-custom .ag-root-wrapper {
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .ag-grid-custom .ag-header {
+  background: hsl(var(--card));
   border-bottom: 1px solid hsl(var(--border));
 }
 
 .ag-grid-custom .ag-header-cell {
+  background: hsl(var(--card));
   border-right: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  font-weight: 600;
 }
 
 .ag-grid-custom .ag-cell {
+  background: hsl(var(--card));
   border-right: 1px solid hsl(var(--border));
   display: flex;
   align-items: center;
+  color: hsl(var(--foreground));
 }
 
 .ag-grid-custom .ag-row {
@@ -32,7 +46,11 @@
 }
 
 .ag-grid-custom .ag-row:hover {
-  background-color: hsl(var(--muted) / 0.3);
+  background-color: hsl(var(--muted) / 0.3) !important;
+}
+
+.ag-grid-custom .ag-row:hover .ag-cell {
+  background-color: hsl(var(--muted) / 0.3) !important;
 }
 
 .ag-grid-custom .ag-header-cell-text {
