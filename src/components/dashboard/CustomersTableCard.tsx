@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Loader2, AlertCircle, Users } from "lucide-react";
 import { ColDef, ICellRendererParams } from "ag-grid-community";
 
 const mockCustomers = [
@@ -158,6 +158,8 @@ export const CustomersTableCard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const pageSize = 8;
 
   const filteredCustomers = useMemo(() => {
@@ -167,6 +169,17 @@ export const CustomersTableCard = () => {
       customer.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm]);
+
+  // Reset to first page when search/sort changes
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    setCurrentPage(1);
+  };
 
   const sortedCustomers = useMemo(() => {
     const sorted = [...filteredCustomers];
@@ -249,13 +262,13 @@ export const CustomersTableCard = () => {
               <Input
                 placeholder="Search"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className="pl-10 w-full md:w-[200px] bg-background"
               />
             </div>
 
             {/* Sort */}
-            <Select value={sortBy} onValueChange={setSortBy}>
+            <Select value={sortBy} onValueChange={handleSortChange}>
               <SelectTrigger className="w-[140px] bg-background">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -271,81 +284,139 @@ export const CustomersTableCard = () => {
 
       {/* Table */}
       <div className="p-6">
-        <div 
-          className="ag-theme-alpine ag-grid-custom" 
-          style={{ height: '400px', width: '100%' }}
-        >
-          <AgGridReact
-            rowData={paginatedCustomers}
-            columnDefs={columnDefs}
-            rowHeight={60}
-            headerHeight={40}
-            suppressPaginationPanel={true}
-            suppressRowClickSelection={true}
-            onGridReady={(params) => {
-              params.api.sizeColumnsToFit();
-            }}
-          />
-        </div>
-
-        {/* Pagination */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-          <div className="text-sm text-muted-foreground">
-            Showing data {startEntry} to {endEntry} of 256K entries
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
+        {hasError ? (
+          // Error State
+          <div className="flex flex-col items-center justify-center h-[400px] space-y-4">
+            <AlertCircle className="h-12 w-12 text-destructive" />
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-foreground">Something went wrong</h3>
+              <p className="text-sm text-muted-foreground">Failed to load customer data. Please try again.</p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => setHasError(false)}
               className="bg-background"
             >
-              <ChevronLeft className="h-4 w-4" />
+              Try Again
             </Button>
-            
-            <div className="flex items-center space-x-1">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                const pageNum = i + 1;
-                return (
-                  <Button
-                    key={pageNum}
-                    variant={currentPage === pageNum ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentPage(pageNum)}
-                    className={currentPage === pageNum ? "" : "bg-background"}
-                  >
-                    {pageNum}
-                  </Button>
-                );
-              })}
-              {totalPages > 5 && (
-                <>
-                  <span className="text-muted-foreground">...</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(totalPages)}
-                    className="bg-background"
-                  >
-                    {totalPages}
-                  </Button>
-                </>
-              )}
+          </div>
+        ) : isLoading ? (
+          // Loading State
+          <div className="flex flex-col items-center justify-center h-[400px] space-y-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Loading customers...</p>
+          </div>
+        ) : sortedCustomers.length === 0 ? (
+          // Empty State
+          <div className="flex flex-col items-center justify-center h-[400px] space-y-4">
+            <Users className="h-12 w-12 text-muted-foreground" />
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-foreground">No customers found</h3>
+              <p className="text-sm text-muted-foreground">
+                {searchTerm ? `No results for "${searchTerm}"` : "No customers to display"}
+              </p>
+            </div>
+            {searchTerm && (
+              <Button 
+                variant="outline" 
+                onClick={() => handleSearchChange("")}
+                className="bg-background"
+              >
+                Clear Search
+              </Button>
+            )}
+          </div>
+        ) : (
+          // Table Content
+          <div 
+            className="ag-theme-alpine ag-grid-custom" 
+            style={{ height: '400px', width: '100%' }}
+          >
+            <AgGridReact
+              rowData={paginatedCustomers}
+              columnDefs={columnDefs}
+              rowHeight={60}
+              headerHeight={40}
+              suppressPaginationPanel={true}
+              suppressRowClickSelection={true}
+              onGridReady={(params) => {
+                params.api.sizeColumnsToFit();
+              }}
+            />
+          </div>
+        )}
+
+        {/* Pagination - only show when data is available */}
+        {!hasError && !isLoading && sortedCustomers.length > 0 && (
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+            <div className="text-sm text-muted-foreground">
+              Showing data {startEntry} to {endEntry} of 256K entries
             </div>
             
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-              className="bg-background"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="bg-background"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              
+              <div className="flex items-center space-x-1">
+                {/* Show pages 1-5 initially, or current page context */}
+                {Array.from({ length: Math.min(5, Math.min(totalPages, 40)) }, (_, i) => {
+                  let pageNum;
+                  if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= Math.min(totalPages, 40) - 2) {
+                    pageNum = Math.min(totalPages, 40) - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={currentPage === pageNum ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={currentPage === pageNum ? "" : "bg-background"}
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                })}
+                
+                {/* Show ellipsis and last page if needed */}
+                {Math.min(totalPages, 40) > 5 && currentPage < Math.min(totalPages, 40) - 2 && (
+                  <>
+                    <span className="text-muted-foreground">...</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(Math.min(totalPages, 40))}
+                      className="bg-background"
+                    >
+                      {Math.min(totalPages, 40)}
+                    </Button>
+                  </>
+                )}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(Math.min(Math.min(totalPages, 40), currentPage + 1))}
+                disabled={currentPage === Math.min(totalPages, 40)}
+                className="bg-background"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
