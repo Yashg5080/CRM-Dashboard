@@ -10,13 +10,6 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, ChevronLeft, ChevronRight, Loader2, AlertCircle, Users } from "lucide-react";
 import { ColDef, ICellRendererParams } from "ag-grid-community";
@@ -156,7 +149,6 @@ const StatusRenderer = (params: ICellRendererParams) => {
 
 export const CustomersTableCard = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -170,39 +162,20 @@ export const CustomersTableCard = () => {
     );
   }, [searchTerm]);
 
-  // Reset to first page when search/sort changes
+  // Reset to first page when search changes
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
     setCurrentPage(1);
   };
 
-  const handleSortChange = (value: string) => {
-    setSortBy(value);
-    setCurrentPage(1);
-  };
-
-  const sortedCustomers = useMemo(() => {
-    const sorted = [...filteredCustomers];
-    switch (sortBy) {
-      case "newest":
-        return sorted.sort((a, b) => new Date(b.joinDate).getTime() - new Date(a.joinDate).getTime());
-      case "name":
-        return sorted.sort((a, b) => a.customerName.localeCompare(b.customerName));
-      case "status":
-        return sorted.sort((a, b) => a.status.localeCompare(b.status));
-      default:
-        return sorted;
-    }
-  }, [filteredCustomers, sortBy]);
-
   const paginatedCustomers = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
-    return sortedCustomers.slice(startIndex, startIndex + pageSize);
-  }, [sortedCustomers, currentPage]);
+    return filteredCustomers.slice(startIndex, startIndex + pageSize);
+  }, [filteredCustomers, currentPage]);
 
-  const totalPages = Math.ceil(sortedCustomers.length / pageSize);
+  const totalPages = Math.ceil(filteredCustomers.length / pageSize);
   const startEntry = (currentPage - 1) * pageSize + 1;
-  const endEntry = Math.min(currentPage * pageSize, sortedCustomers.length);
+  const endEntry = Math.min(currentPage * pageSize, filteredCustomers.length);
 
   const columnDefs = useMemo<ColDef[]>(() => [
     {
@@ -210,38 +183,38 @@ export const CustomersTableCard = () => {
       field: "customerName",
       width: 200,
       cellRenderer: CustomerNameRenderer,
-      sortable: false,
+      sortable: true,
     },
     {
       headerName: "Company",
       field: "company",
       width: 150,
-      sortable: false,
+      sortable: true,
     },
     {
       headerName: "Phone Number",
       field: "phoneNumber",
       width: 150,
-      sortable: false,
+      sortable: true,
     },
     {
       headerName: "Email",
       field: "email",
       width: 200,
-      sortable: false,
+      sortable: true,
     },
     {
       headerName: "Country",
       field: "country",
       width: 150,
-      sortable: false,
+      sortable: true,
     },
     {
       headerName: "Status",
       field: "status",
       width: 100,
       cellRenderer: StatusRenderer,
-      sortable: false,
+      sortable: true,
     },
   ], []);
 
@@ -266,18 +239,6 @@ export const CustomersTableCard = () => {
                 className="pl-10 w-full md:w-[200px] bg-background"
               />
             </div>
-
-            {/* Sort */}
-            <Select value={sortBy} onValueChange={handleSortChange}>
-              <SelectTrigger className="w-[140px] bg-background">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border">
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="name">Name</SelectItem>
-                <SelectItem value="status">Status</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
       </div>
@@ -306,7 +267,7 @@ export const CustomersTableCard = () => {
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
             <p className="text-sm text-muted-foreground">Loading customers...</p>
           </div>
-        ) : sortedCustomers.length === 0 ? (
+        ) : filteredCustomers.length === 0 ? (
           // Empty State
           <div className="flex flex-col items-center justify-center h-[400px] space-y-4">
             <Users className="h-12 w-12 text-muted-foreground" />
@@ -347,7 +308,7 @@ export const CustomersTableCard = () => {
         )}
 
         {/* Pagination - only show when data is available */}
-        {!hasError && !isLoading && sortedCustomers.length > 0 && (
+        {!hasError && !isLoading && filteredCustomers.length > 0 && (
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
             <div className="text-sm text-muted-foreground">
               Showing data {startEntry} to {endEntry} of 256K entries
