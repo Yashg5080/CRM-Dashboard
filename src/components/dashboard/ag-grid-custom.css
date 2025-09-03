@@ -13,6 +13,7 @@
   --ag-cell-horizontal-padding: 16px;
   --ag-grid-size: 4px;
   --ag-wrapper-border-radius: 8px;
+  background: hsl(var(--card));
 }
 
 .ag-grid-custom .ag-root-wrapper {
