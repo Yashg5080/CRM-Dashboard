@@ -291,7 +291,7 @@ export const CustomersTableCard = () => {
         {/* Pagination */}
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
           <div className="text-sm text-muted-foreground">
-            Showing data {startEntry} to {endEntry} of {sortedCustomers.length}K entries
+            Showing data {startEntry} to {endEntry} of 256K entries
           </div>
           
           <div className="flex items-center space-x-2">

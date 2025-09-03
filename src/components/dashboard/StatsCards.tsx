@@ -1,62 +1,84 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, TrendingUp, DollarSign, Phone } from "lucide-react";
+import { Users, UserCheck, Monitor } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { TrendingUp, TrendingDown } from "lucide-react";
 
 const stats = [
   {
     title: "Total Customers",
-    value: "2,847",
-    change: "+12.5%",
+    value: "5,423",
+    change: "18% this month",
     changeType: "increase",
     icon: Users,
+    iconBg: "bg-green-100",
+    iconColor: "text-green-600",
   },
   {
-    title: "Active Leads",
-    value: "1,234",
-    change: "+8.2%",
-    changeType: "increase",
-    icon: TrendingUp,
-  },
-  {
-    title: "Revenue",
-    value: "$84,350",
-    change: "+23.1%",
-    changeType: "increase",
-    icon: DollarSign,
-  },
-  {
-    title: "Calls Today",
-    value: "42",
-    change: "-2.4%",
+    title: "Members", 
+    value: "1,893",
+    change: "1% this month",
     changeType: "decrease",
-    icon: Phone,
+    icon: UserCheck,
+    iconBg: "bg-green-100",
+    iconColor: "text-green-600",
+  },
+  {
+    title: "Active Now",
+    value: "189",
+    change: "",
+    changeType: "neutral",
+    icon: Monitor,
+    iconBg: "bg-green-100", 
+    iconColor: "text-green-600",
+    showAvatars: true,
+    avatars: [
+      "/api/placeholder/24/24",
+      "/api/placeholder/24/24", 
+      "/api/placeholder/24/24",
+      "/api/placeholder/24/24",
+      "/api/placeholder/24/24"
+    ]
   },
 ];
 
 export const StatsCards = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       {stats.map((stat) => {
         const Icon = stat.icon;
+        const TrendIcon = stat.changeType === "increase" ? TrendingUp : TrendingDown;
+        
         return (
-          <Card key={stat.title} className="border-border shadow-sm hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
-              <Icon className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-              <p
-                className={`text-xs ${
-                  stat.changeType === "increase"
-                    ? "text-success"
-                    : "text-destructive"
-                }`}
-              >
-                {stat.change} from last month
-              </p>
-            </CardContent>
+          <Card key={stat.title} className="bg-white border-0 shadow-sm rounded-2xl p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="text-sm text-gray-500 mb-2">{stat.title}</div>
+                <div className="text-2xl font-bold text-gray-900 mb-2">{stat.value}</div>
+                {stat.change && (
+                  <div className="flex items-center gap-1 text-sm">
+                    <TrendIcon className={`h-3 w-3 ${
+                      stat.changeType === "increase" ? "text-green-500" : "text-red-500"
+                    }`} />
+                    <span className={stat.changeType === "increase" ? "text-green-500" : "text-red-500"}>
+                      {stat.change}
+                    </span>
+                  </div>
+                )}
+                {stat.showAvatars && (
+                  <div className="flex -space-x-2 mt-2">
+                    {stat.avatars?.slice(0, 5).map((avatar, index) => (
+                      <Avatar key={index} className="h-6 w-6 border-2 border-white">
+                        <AvatarImage src={avatar} />
+                        <AvatarFallback className="text-xs">U</AvatarFallback>
+                      </Avatar>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className={`p-3 rounded-xl ${stat.iconBg}`}>
+                <Icon className={`h-6 w-6 ${stat.iconColor}`} />
+              </div>
+            </div>
           </Card>
         );
       })}
