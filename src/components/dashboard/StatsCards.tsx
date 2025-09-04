@@ -50,10 +50,13 @@ export const StatsCards = () => {
         
         return (
           <Card key={stat.title} className="bg-white border-0 shadow-sm rounded-2xl p-6">
-            <div className="flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`p-4 rounded-2xl ${stat.iconBg} flex-shrink-0`}>
+                <Icon className={`h-8 w-8 ${stat.iconColor}`} />
+              </div>
               <div className="flex-1">
-                <div className="text-sm text-gray-500 mb-2">{stat.title}</div>
-                <div className="text-2xl font-bold text-gray-900 mb-2">{stat.value}</div>
+                <div className="text-sm text-gray-500 mb-1">{stat.title}</div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</div>
                 {stat.change && (
                   <div className="flex items-center gap-1 text-sm">
                     <TrendIcon className={`h-3 w-3 ${
@@ -74,9 +77,6 @@ export const StatsCards = () => {
                     ))}
                   </div>
                 )}
-              </div>
-              <div className={`p-3 rounded-xl ${stat.iconBg}`}>
-                <Icon className={`h-6 w-6 ${stat.iconColor}`} />
               </div>
             </div>
           </Card>
