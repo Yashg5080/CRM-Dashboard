@@ -50,29 +50,29 @@ export const StatsCards = () => {
         
         return (
           <Card key={stat.title} className="bg-white border-0 shadow-sm rounded-2xl p-6">
-            <div className="flex items-center gap-4">
-              <div className={`p-4 rounded-2xl ${stat.iconBg} flex-shrink-0`}>
-                <Icon className={`h-8 w-8 ${stat.iconColor}`} />
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                <Icon className="h-8 w-8 text-green-600" />
               </div>
               <div className="flex-1">
-                <div className="text-sm text-gray-500 mb-1">{stat.title}</div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</div>
+                <div className="text-sm text-gray-500 font-medium mb-1">{stat.title}</div>
+                <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
                 {stat.change && (
                   <div className="flex items-center gap-1 text-sm">
-                    <TrendIcon className={`h-3 w-3 ${
+                    <TrendIcon className={`h-4 w-4 ${
                       stat.changeType === "increase" ? "text-green-500" : "text-red-500"
                     }`} />
-                    <span className={stat.changeType === "increase" ? "text-green-500" : "text-red-500"}>
+                    <span className={`font-medium ${stat.changeType === "increase" ? "text-green-500" : "text-red-500"}`}>
                       {stat.change}
                     </span>
                   </div>
                 )}
                 {stat.showAvatars && (
-                  <div className="flex -space-x-2 mt-2">
+                  <div className="flex -space-x-1 mt-3">
                     {stat.avatars?.slice(0, 5).map((avatar, index) => (
-                      <Avatar key={index} className="h-6 w-6 border-2 border-white">
+                      <Avatar key={index} className="h-7 w-7 border-2 border-white">
                         <AvatarImage src={avatar} />
-                        <AvatarFallback className="text-xs">U</AvatarFallback>
+                        <AvatarFallback className="text-xs bg-gray-200">U</AvatarFallback>
                       </Avatar>
                     ))}
                   </div>
