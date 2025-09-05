@@ -135,15 +135,15 @@ const CustomerNameRenderer = (params: ICellRendererParams) => {
 const StatusRenderer = (params: ICellRendererParams) => {
   const { value } = params;
   return (
-    <Badge 
-      className={`${
+    <span 
+      className={`inline-flex items-center justify-center px-3 py-1 text-sm font-medium rounded-md min-w-[70px] ${
         value === "Active" 
-          ? "bg-success-light text-success-foreground" 
-          : "bg-destructive text-destructive-foreground"
-      } border-0`}
+          ? "bg-green-100 text-green-700 border border-green-200" 
+          : "bg-red-100 text-red-700 border border-red-200"
+      }`}
     >
       {value}
-    </Badge>
+    </span>
   );
 };
 
